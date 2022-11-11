@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef, useState} from "react";
 import { Routes, Route, Link, useParams } from "react-router-dom";
 import Header from "./Header";
 import useFetch from "./useFetch";
@@ -6,14 +6,38 @@ import useFetch from "./useFetch";
 const Libros = () => {
   const libros = useFetch("http://localhost:8080/");
 
+  const inputSearch = useRef();
+  const [texto, setTexto] = useState();
+
   return (
-    <ul>
-      {libros.map((libro, i) => (
-        <li key={i}>
-          <Link to={"/libro/" + libro.titulo}>{libro.titulo}</Link>
-        </li>
-      ))}
-    </ul>
+    <>
+      <input
+        type="search"
+        placeholder="Buscar libros..."
+        ref={inputSearch}
+        onKeyUp={() => setTexto(inputSearch.current.value)}
+      />
+      <ul>
+        {libros.map((libro, i) => (
+          <li key={i}>
+            <Link to={"/libro/" + libro.titulo}>{libro.titulo}</Link>
+          </li>
+        ))}
+      </ul>
+      {libros && texto && (
+        <ul>
+          {libros
+            .filter((libro) =>
+              libro.titulo.toLowerCase().includes(texto.toLowerCase())
+            )
+            .map((libro) => (
+              <li key={libro.isbn}>
+                <Link to={"/libro/" + libro.titulo}>{libro.titulo}</Link>
+              </li>
+            ))}
+        </ul>
+      )}
+    </>
   );
 };
 
