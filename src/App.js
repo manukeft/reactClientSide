@@ -6,17 +6,8 @@ import useFetch from "./useFetch";
 const Libros = () => {
   const libros = useFetch("http://localhost:8080/");
 
-  const inputSearch = useRef();
-  const [texto, setTexto] = useState();
-
   return (
     <>
-      <input
-        type="search"
-        placeholder="Buscar libros..."
-        ref={inputSearch}
-        onKeyUp={() => setTexto(inputSearch.current.value)}
-      />
       <ul>
         {libros.map((libro, i) => (
           <li key={i}>
@@ -24,25 +15,14 @@ const Libros = () => {
           </li>
         ))}
       </ul>
-      {libros && texto && (
-        <ul>
-          {libros
-            .filter((libro) =>
-              libro.titulo.toLowerCase().includes(texto.toLowerCase())
-            )
-            .map((libro) => (
-              <li key={libro.isbn}>
-                <Link to={"/libro/" + libro.titulo}>{libro.titulo}</Link>
-              </li>
-            ))}
-        </ul>
-      )}
+      <p>
+        <Link to="/search">Buscar libros</Link>
+      </p>
     </>
   );
 };
 
 const Libro = () => {
-  // Parámetros de la url
   const { titulo } = useParams();
   const libros = useFetch("http://localhost:8080/");
 
@@ -139,6 +119,39 @@ const Year = () => {
   );
 };
 
+const Search = () => {
+  const libros = useFetch("http://localhost:8080/");
+
+  const inputSearch = useRef();
+  const [texto, setTexto] = useState();
+
+  return (
+    <>
+        <input
+          type="search"
+          placeholder="Buscar libros..."
+          ref={inputSearch}
+          name="busqueda"
+          onKeyUp={() => setTexto(inputSearch.current.value)}
+        />
+
+      {libros && texto && (
+        <ul>
+          {libros
+            .filter((libro) =>
+              libro.titulo.toLowerCase().includes(texto.toLowerCase())
+            )
+            .map((libro) => (
+              <li key={libro.isbn}>
+                <Link to={"/libro/" + libro.titulo}>{libro.titulo}</Link>
+              </li>
+            ))}
+        </ul>
+      )}
+    </>
+  );
+};
+
 const App = () => (
   <>
     <Header />
@@ -148,6 +161,7 @@ const App = () => (
       <Route path="/autor/:autor" element={<Autor />} />
       <Route path="/editorial/:editorial" element={<Editorial />} />
       <Route path="/year/:year" element={<Year />} />
+      <Route path="/search" element={<Search />} />
     </Routes>
   </>
 );
