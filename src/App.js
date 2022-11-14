@@ -98,19 +98,17 @@ const Editorial = () => {
 
 const Year = () => {
   const { year } = useParams();
-  const libros = useFetch("http://localhost:8080/");
+  const libros = useFetch("http://localhost:8080/year/" + year );
 
   return (
     <>
+      <h2>Libros del año: {year}</h2>
       <ul>
-        {libros
-          .filter((libro) => libro.year === year)
-          .map((libro, i) => (
-            <li key={i}>
-              <h2>Libros del año: {libro.year}</h2>
-              <Link to={"/libro/" + libro.titulo}>{libro.titulo}</Link>
-            </li>
-          ))}
+        {libros.map((libro, i) => (
+          <li key={i}>
+            <Link to={"/libro/" + libro.titulo}>{libro.titulo}</Link>
+          </li>
+        ))}
       </ul>
       <p>
         <Link to="/">Regresar a la home</Link>
